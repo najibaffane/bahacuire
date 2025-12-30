@@ -1,4 +1,3 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -9,8 +8,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    emptyOutDir: true,
     sourcemap: false,
-    minify: 'esbuild', // Utilise le moteur interne ultra-rapide au lieu de Terser
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -21,6 +21,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000
+    port: 3000,
+    host: true
   }
 });
