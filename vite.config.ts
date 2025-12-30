@@ -14,9 +14,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', '@google/genai', '@supabase/supabase-js'],
+          vendor: ['react', 'react-dom'],
+          utils: ['@google/genai', '@supabase/supabase-js']
         },
       },
     },
+  },
+  server: {
+    port: 3000
   }
 });
