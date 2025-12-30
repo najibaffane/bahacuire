@@ -9,23 +9,15 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    sourcemap: false,
-    minify: 'esbuild', // Esbuild est intégré à Vite, pas besoin de dépendance supplémentaire
+    minify: 'esbuild',
     rollupOptions: {
       input: {
         main: './index.html',
-      },
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          utils: ['@google/genai', '@supabase/supabase-js']
-        },
       },
     },
   },
   server: {
     port: 3000,
-    host: true,
-    strictPort: true
+    host: true
   }
 });

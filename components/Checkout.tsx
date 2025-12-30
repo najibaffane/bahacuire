@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CartItem, Order } from '../types';
 
@@ -37,97 +36,105 @@ const Checkout: React.FC<CheckoutProps> = ({ cart, onRemove, onComplete, onBackT
 
   if (cart.length === 0 && step !== 'success') {
     return (
-      <div className="pt-40 pb-20 max-w-7xl mx-auto px-6 text-center page-fade">
-        <h2 className="text-4xl serif mb-8">Votre panier est vide</h2>
-        <p className="text-gray-500 mb-12 italic">Le cuir attend votre histoire...</p>
-        <button onClick={onBackToShop} className="text-[#C9A66B] uppercase tracking-[0.4em] text-[10px] font-bold">Retour aux collections</button>
+      <div className="pt-60 pb-20 max-w-7xl mx-auto px-6 text-center animate-in fade-in duration-1000">
+        <h2 className="text-6xl serif mb-8">L'Atelier est prêt.</h2>
+        <p className="text-white/40 mb-12 italic text-lg font-light">Votre sélection est actuellement vide. Laissez-vous inspirer par nos créations.</p>
+        <button 
+          onClick={onBackToShop} 
+          className="text-[#C9A66B] uppercase tracking-[0.5em] text-[10px] font-black border-b border-[#C9A66B]/30 pb-2 hover:border-[#C9A66B] transition-all"
+        >
+          Explorer la Collection
+        </button>
       </div>
     );
   }
 
   if (step === 'success') {
     return (
-      <div className="pt-48 pb-20 max-w-xl mx-auto px-6 text-center animate-in fade-in slide-in-from-bottom-8 duration-700">
-        <div className="w-24 h-24 bg-[#C9A66B]/10 text-[#C9A66B] rounded-full flex items-center justify-center mx-auto mb-10">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="pt-60 pb-20 max-w-xl mx-auto px-6 text-center animate-in fade-in zoom-in duration-700">
+        <div className="w-24 h-24 bg-[#C9A66B]/10 text-[#C9A66B] rounded-full flex items-center justify-center mx-auto mb-10 border border-[#C9A66B]/20">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-5xl serif mb-8 text-gray-900">Commande reçue</h2>
-        <p className="text-gray-600 mb-12 leading-relaxed italic text-lg">
-          Merci pour votre confiance. En tant qu'atelier artisanal, nous préparons chaque pièce avec soin. 
-          Nous vous contacterons par téléphone pour confirmer la livraison. 
-          <br/><span className="font-bold text-black mt-4 block">Paiement à la livraison.</span>
+        <h2 className="text-6xl serif mb-8 text-white">Merci pour votre confiance</h2>
+        <p className="text-white/50 mb-12 leading-relaxed italic text-lg font-light">
+          Votre commande a été transmise à l'artisan. Nous vous contacterons par téléphone sous 24h pour valider les derniers détails de votre pièce.
         </p>
         <button 
           onClick={onBackToShop}
-          className="bg-black text-white px-16 py-6 uppercase tracking-[0.4em] text-[10px] font-black hover:bg-[#8B5E3C] transition-all shadow-xl"
+          className="bg-white text-black px-16 py-6 rounded-2xl uppercase tracking-[0.4em] text-[10px] font-black hover:bg-[#C9A66B] transition-all shadow-2xl"
         >
-          Retour à la boutique
+          Retour au site
         </button>
       </div>
     );
   }
 
   return (
-    <div className="pt-32 pb-40 max-w-7xl mx-auto px-6 page-fade">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
-        <div>
-          <h2 className="text-5xl serif mb-16">Récapitulatif de l'ouvrage</h2>
-          <div className="space-y-10 mb-12">
+    <div className="pt-40 pb-40 max-w-7xl mx-auto px-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 md:gap-32">
+        <div className="space-y-12">
+          <h2 className="text-5xl serif mb-16">Votre Sélection</h2>
+          <div className="space-y-10">
             {cart.map((item) => (
-              <div key={item.id} className="flex space-x-8 pb-10 border-b border-gray-100 items-center">
-                <img src={item.images[0]} alt={item.name} className="w-24 h-32 object-cover" />
+              <div key={item.id} className="flex gap-8 pb-10 border-b border-white/5 items-center animate-in fade-in duration-500">
+                <img src={item.images[0]} alt={item.name} className="w-24 h-32 object-cover rounded-[1.5rem] shadow-xl" />
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="serif text-2xl font-medium">{item.name}</h3>
-                    <button onClick={() => onRemove(item.id)} className="text-gray-300 hover:text-red-500 transition-colors">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <h3 className="serif text-2xl text-white font-light">{item.name}</h3>
+                    <button onClick={() => onRemove(item.id)} className="text-white/20 hover:text-red-400 transition-colors p-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                   </div>
                   <div className="flex justify-between items-center">
-                    <p className="text-gray-400 text-[10px] uppercase tracking-widest">Quantité: {item.quantity}</p>
-                    <p className="serif text-xl italic">{item.price.toLocaleString()} DA</p>
+                    <p className="text-white/20 text-[9px] uppercase tracking-widest font-black italic">Haut de gamme x{item.quantity}</p>
+                    <p className="serif text-2xl italic text-[#C9A66B]">{item.price.toLocaleString()} DA</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <div className="flex justify-between items-center py-8 border-t-2 border-black">
-            <span className="text-3xl serif uppercase tracking-widest">Total</span>
-            <span className="text-4xl serif italic text-[#8B5E3C]">{total.toLocaleString()} DA</span>
+          <div className="pt-10 flex justify-between items-center border-t-2 border-[#C9A66B]/10">
+            <span className="text-2xl serif text-white/40 uppercase tracking-widest">Estimation Totale</span>
+            <span className="text-5xl serif italic text-white">{total.toLocaleString()} DA</span>
           </div>
-          <p className="mt-6 text-[10px] text-gray-400 uppercase tracking-[0.3em] italic">Livraison gratuite partout en Algérie</p>
+          <div className="bg-white/[0.02] border border-white/5 p-8 rounded-[2rem] flex items-center gap-6">
+             <div className="w-12 h-12 bg-[#C9A66B]/10 rounded-full flex items-center justify-center text-[#C9A66B]">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M5 13l4 4L19 7"/></svg>
+             </div>
+             <p className="text-[10px] font-black uppercase tracking-widest text-white/60">Livraison Gratuite & Paiement à la réception</p>
+          </div>
         </div>
 
-        <div className="bg-white p-12 md:p-20 shadow-2xl border border-gray-50">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <h3 className="text-3xl serif mb-10">Détails de Livraison</h3>
-            <div className="space-y-6">
+        <div className="bg-white/[0.03] p-12 md:p-16 rounded-[3rem] border border-white/5 shadow-[0_0_80px_rgba(0,0,0,0.4)] animate-in slide-in-from-right-8 duration-1000 delay-300">
+          <form onSubmit={handleSubmit} className="space-y-12">
+            <h3 className="text-4xl serif mb-10 text-[#C9A66B] italic">Carnet de Commande</h3>
+            <div className="space-y-10">
               <div className="group">
-                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 mb-2 transition-colors group-focus-within:text-[#8B5E3C]">Nom complet</label>
-                <input required type="text" className="w-full border-b border-gray-200 py-3 outline-none focus:border-[#8B5E3C] transition-colors bg-transparent" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3 transition-colors group-focus-within:text-[#C9A66B]">Nom complet</label>
+                <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 outline-none focus:border-[#C9A66B] transition-all text-white" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="group">
-                  <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 mb-2 transition-colors group-focus-within:text-[#8B5E3C]">Numéro de téléphone</label>
-                  <input required type="tel" className="w-full border-b border-gray-200 py-3 outline-none focus:border-[#8B5E3C] transition-colors bg-transparent" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                  <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3 transition-colors group-focus-within:text-[#C9A66B]">Numéro de téléphone</label>
+                  <input required type="tel" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 outline-none focus:border-[#C9A66B] transition-all text-white" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
                 </div>
                 <div className="group">
-                  <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 mb-2 transition-colors group-focus-within:text-[#8B5E3C]">Email</label>
-                  <input required type="email" className="w-full border-b border-gray-200 py-3 outline-none focus:border-[#8B5E3C] transition-colors bg-transparent" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                  <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3 transition-colors group-focus-within:text-[#C9A66B]">Email</label>
+                  <input required type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 outline-none focus:border-[#C9A66B] transition-all text-white" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
                 </div>
               </div>
               <div className="group">
-                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 mb-2 transition-colors group-focus-within:text-[#8B5E3C]">Adresse complète (Wilaya, Commune, Rue)</label>
-                <textarea required rows={3} className="w-full border-b border-gray-200 py-3 outline-none focus:border-[#8B5E3C] transition-colors bg-transparent resize-none" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
+                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3 transition-colors group-focus-within:text-[#C9A66B]">Adresse de livraison détaillée</label>
+                <textarea required rows={3} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 outline-none focus:border-[#C9A66B] transition-all text-white resize-none" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
               </div>
             </div>
             <div className="pt-10">
-              <button type="submit" className="w-full bg-[#8B5E3C] text-white py-6 uppercase tracking-[0.5em] text-[10px] font-black hover:bg-black transition-all shadow-xl">
-                Confirmer la commande — {total.toLocaleString()} DA
+              <button type="submit" className="w-full bg-[#C9A66B] text-black py-7 rounded-2xl uppercase tracking-[0.5em] text-[11px] font-black hover:bg-white transition-all shadow-2xl">
+                Confirmer mon Ouvrage
               </button>
-              <p className="text-[9px] text-gray-400 text-center mt-6 uppercase tracking-widest italic font-bold">Paiement CASH à la réception</p>
+              <p className="text-center mt-8 text-[8px] text-white/30 uppercase tracking-[0.4em] font-black">L'artisan vous contactera sous peu.</p>
             </div>
           </form>
         </div>
