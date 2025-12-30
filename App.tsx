@@ -28,36 +28,54 @@ const App: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const { data: catsData } = await supabase.from('categories').select('*').order('name');
+      if (catsData) setCategories(catsData);
+      
+      const { data: productsData } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (productsData && productsData.length > 0) {
+        setProducts(productsData);
+      } else {
+        const savedProducts = localStorage.getItem('baha_products');
+        setProducts(savedProducts ? JSON.parse(savedProducts) : INITIAL_PRODUCTS);
+      }
+      
+      const { data: ordersData } = await supabase.from('orders').select('*').order('date', { ascending: false });
+      if (ordersData) setOrders(ordersData);
+    } catch (err) { 
+      console.error("Fetch error:", err); 
+    } finally { 
+      setIsLoading(false); 
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const { data: catsData } = await supabase.from('categories').select('*').order('name');
-        if (catsData) setCategories(catsData);
-        const { data: productsData } = await supabase.from('products').select('*').order('created_at', { ascending: false });
-        if (productsData && productsData.length > 0) {
-          setProducts(productsData);
-        } else {
-          const savedProducts = localStorage.getItem('baha_products');
-          setProducts(savedProducts ? JSON.parse(savedProducts) : INITIAL_PRODUCTS);
-        }
-        const { data: ordersData } = await supabase.from('orders').select('*').order('date', { ascending: false });
-        if (ordersData) setOrders(ordersData);
-      } catch (err) { console.error(err); }
-      finally { setIsLoading(false); }
-    };
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('active');
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, [view, selectedProduct, products, categories, isLoading]);
+  // Gestion de l'enregistrement de la commande
+  const handleCompleteOrder = async (orderData: Omit<Order, 'id' | 'status' | 'date'>) => {
+    const newOrder: Order = {
+      ...orderData,
+      id: `BC-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      status: 'pending',
+      date: new Date().toISOString()
+    };
+
+    try {
+      const { error } = await supabase.from('orders').insert([newOrder]);
+      if (error) throw error;
+      
+      // Mise à jour locale pour l'admin
+      setOrders(prev => [newOrder, ...prev]);
+      setCart([]);
+    } catch (err) {
+      console.error("Erreur lors de l'enregistrement de la commande:", err);
+      alert("Une erreur est survenue. Votre commande n'a pas pu être enregistrée. Veuillez contacter l'atelier.");
+    }
+  };
 
   const navigateTo = (targetView: View, product: Product | null = null) => {
     setView(targetView);
@@ -73,7 +91,11 @@ const App: React.FC = () => {
         <ProductDetail 
           product={selectedProduct} 
           onAddToCart={(p) => setCart(prev => [...prev, {...p, quantity: 1}])}
-          onBuyNow={(p) => { setCart(prev => [...prev, {...p, quantity: 1}]); navigateTo('checkout'); }}
+          onBuyNow={(p) => { 
+            // Vider le panier actuel pour un achat immédiat "propre"
+            setCart([{...p, quantity: 1}]); 
+            navigateTo('checkout'); 
+          }}
           onBack={() => navigateTo('shop')} 
         />
       );
@@ -82,35 +104,28 @@ const App: React.FC = () => {
     switch (view) {
       case 'home':
         return (
-          <div className="animate-in fade-in duration-1000">
+          <div className="animate-in fade-in duration-1000 h-screen overflow-hidden">
             <Hero onExplore={() => navigateTo('shop')} />
-            <section className="py-60 px-6 max-w-4xl mx-auto">
-              <div className="bg-white/[0.02] border border-white/5 p-16 md:p-24 reveal text-center relative overflow-hidden rounded-[4rem]">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A66B]/30 to-transparent" />
-                <span className="text-[#C9A66B] uppercase tracking-[0.6em] text-[9px] font-black mb-10 block">L'Héritage Artisanal</span>
-                <h2 className="text-5xl md:text-7xl serif mb-12 leading-tight">La Main qui <span className="italic">pense.</span></h2>
-                <p className="text-white/50 font-light text-xl leading-relaxed mb-16 max-w-xl mx-auto italic">
-                  Chaque point est une signature. Chaque pièce Baha Cuir raconte l'histoire d'une patience infinie.
-                </p>
-                <div className="flex justify-center">
-                  <button onClick={() => navigateTo('shop')} className="group flex items-center gap-6 text-[9px] font-black uppercase tracking-[0.4em] text-[#C9A66B] hover:text-white transition-all">
-                    Explorer la collection <div className="w-12 h-[1px] bg-[#C9A66B] group-hover:w-24 group-hover:bg-white transition-all" />
-                  </button>
-                </div>
-              </div>
-            </section>
           </div>
         );
       case 'shop':
-        return <ProductGrid products={products} categories={categories} onAddToCart={(p) => setCart(prev => [...prev, {...p, quantity: 1}])} onBuyNow={(p) => { setCart(prev => [...prev, {...p, quantity: 1}]); navigateTo('checkout'); }} onSelectProduct={(p) => navigateTo('product-detail', p)} />;
+        return <ProductGrid products={products} categories={categories} onAddToCart={(p) => setCart(prev => [...prev, {...p, quantity: 1}])} onBuyNow={(p) => { setCart([{...p, quantity: 1}]); navigateTo('checkout'); }} onSelectProduct={(p) => navigateTo('product-detail', p)} />;
       case 'advisor': return <AIAdvisor />;
-      case 'checkout': return <Checkout cart={cart} onRemove={(id) => setCart(c => c.filter(x => x.id !== id))} onComplete={() => setCart([])} onBackToShop={() => navigateTo('shop')} />;
+      case 'checkout': 
+        return (
+          <Checkout 
+            cart={cart} 
+            onRemove={(id) => setCart(c => c.filter(x => x.id !== id))} 
+            onComplete={handleCompleteOrder} 
+            onBackToShop={() => navigateTo('shop')} 
+          />
+        );
       case 'admin-login': return <AdminLogin onLogin={() => navigateTo('admin-dashboard')} onBack={() => navigateTo('home')} />;
       case 'admin-dashboard':
         return (
           <AdminDashboard 
             products={products} orders={orders} categories={categories}
-            onAddProduct={async (p) => { const n = {...p, id: Date.now().toString()}; await supabase.from('products').insert([n]); setProducts([...products, n]); }}
+            onAddProduct={async (p) => { const n = {...p, id: Date.now().toString()}; await supabase.from('products').insert([n]); setProducts([n, ...products]); }}
             onDeleteProduct={async (id) => { await supabase.from('products').delete().eq('id', id); setProducts(products.filter(p => p.id !== id)); }}
             onUpdateOrderStatus={async (id, status) => { await supabase.from('orders').update({ status }).eq('id', id); setOrders(orders.map(o => o.id === id ? {...o, status} : o)); }}
             onAddCategory={async (n) => { const s = n.toLowerCase().replace(/ /g, '-'); const c = {id: `cat-${Date.now()}`, name: n, slug: s}; await supabase.from('categories').insert([c]); setCategories([...categories, c]); }}
@@ -140,7 +155,7 @@ const App: React.FC = () => {
       )}
       <main className="relative z-10">{renderView()}</main>
       
-      {view !== 'admin-dashboard' && view !== 'admin-login' && (
+      {view !== 'admin-dashboard' && view !== 'admin-login' && view !== 'home' && (
         <footer className="relative z-20 py-20 px-8 flex flex-col md:flex-row justify-between items-center text-[9px] uppercase tracking-[0.6em] text-white/20 border-t border-white/5 bg-[#050404]/95">
           <div className="flex items-center">
             <button onClick={() => navigateTo('admin-login')} className="hover:text-[#C9A66B] transition-colors mr-1">©</button>

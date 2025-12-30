@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@100;300;400;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@100;300;400;600;900&family=Pinyon+Script&display=swap" rel="stylesheet">
     <style>
         :root {
             --accent: #C9A66B;
@@ -24,29 +24,30 @@
                 url('https://www.transparenttextures.com/patterns/leather.png');
             background-attachment: fixed;
         }
-        h1, h2, h3, .serif { font-family: 'Cormorant Garamond', serif; }
+        h1, h2, h3, h4, .serif { font-family: 'Playfair Display', serif; }
         .pinyon { font-family: 'Pinyon Script', cursive; }
 
-        @keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        @keyframes slideOutLeft { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-        @keyframes slideOutRight { from { transform: translateX(0); } to { transform: translateX(100%); } }
-
-        .panel-left { animation: slideInLeft 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
-        .panel-right { animation: slideInRight 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
-        .panel-left.exit { animation: slideOutLeft 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
-        .panel-right.exit { animation: slideOutRight 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        /* Animations fluides */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        .animate-fade-in { animation: fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-slide-up { animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-zoom-in { animation: zoomIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        .fill-mode-forwards { animation-fill-mode: forwards; }
 
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: var(--leather-black); }
         ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+        /* Délais */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-500 { animation-delay: 500ms; }
+        .delay-700 { animation-delay: 700ms; }
     </style>
 <script type="importmap">
 {
