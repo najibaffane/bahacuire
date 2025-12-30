@@ -12,6 +12,9 @@ export default defineConfig({
     sourcemap: false,
     minify: 'esbuild',
     rollupOptions: {
+      input: {
+        main: './index.html',
+      },
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
@@ -22,6 +25,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: true
+    host: true,
+    strictPort: true
   }
 });
