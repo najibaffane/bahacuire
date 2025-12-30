@@ -10,7 +10,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
-    minify: 'terser',
+    minify: 'esbuild', // Utilise le moteur interne ultra-rapide au lieu de Terser
     rollupOptions: {
       output: {
         manualChunks: {
