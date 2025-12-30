@@ -1,4 +1,3 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -11,7 +10,7 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: false,
-    minify: 'terser',
+    minify: 'esbuild', // Esbuild est intégré à Vite, pas besoin de dépendance supplémentaire
     rollupOptions: {
       input: {
         main: './index.html',
