@@ -1,0 +1,7 @@
+{
+  "name": "Baha Cuir - Haute Maroquinerie",
+  "description": "Showcase artisanal de Baha Cuir : maroquinerie d'exception cousue à la main, sans compromis.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
