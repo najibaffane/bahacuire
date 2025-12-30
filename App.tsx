@@ -55,7 +55,6 @@ const App: React.FC = () => {
     fetchData();
   }, []);
 
-  // Gestion de l'enregistrement de la commande
   const handleCompleteOrder = async (orderData: Omit<Order, 'id' | 'status' | 'date'>) => {
     const newOrder: Order = {
       ...orderData,
@@ -68,7 +67,6 @@ const App: React.FC = () => {
       const { error } = await supabase.from('orders').insert([newOrder]);
       if (error) throw error;
       
-      // Mise à jour locale pour l'admin
       setOrders(prev => [newOrder, ...prev]);
       setCart([]);
     } catch (err) {
@@ -92,7 +90,6 @@ const App: React.FC = () => {
           product={selectedProduct} 
           onAddToCart={(p) => setCart(prev => [...prev, {...p, quantity: 1}])}
           onBuyNow={(p) => { 
-            // Vider le panier actuel pour un achat immédiat "propre"
             setCart([{...p, quantity: 1}]); 
             navigateTo('checkout'); 
           }}
@@ -104,7 +101,7 @@ const App: React.FC = () => {
     switch (view) {
       case 'home':
         return (
-          <div className="animate-in fade-in duration-1000 h-screen overflow-hidden">
+          <div className="animate-in fade-in duration-1000 min-h-screen">
             <Hero onExplore={() => navigateTo('shop')} />
           </div>
         );
